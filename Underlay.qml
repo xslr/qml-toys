@@ -10,13 +10,17 @@ Item {
     property color r2Color: 'darkgray'
     property color r3Color: 'lightgray'
 
-    property bool showMask: false
+    property bool showMaskCircles: false
+    property bool showMasks: true
+
+
+    // invisible -------------------------------
 
     // circles
     Item {
         id: circR3
         anchors.fill: parent
-        visible: showMask
+        visible: showMaskCircles
         Rectangle {
             anchors.centerIn: parent
             color: r3Color
@@ -29,7 +33,7 @@ Item {
     Item {
         id: circR2
         anchors.fill: parent
-        visible: showMask
+        visible: showMaskCircles
         Rectangle {
             anchors.centerIn: parent
             color: r2Color
@@ -42,7 +46,7 @@ Item {
     Item {
         id: circR1
         anchors.fill: parent
-        visible: showMask
+        visible: showMaskCircles
         Rectangle {
             anchors.centerIn: parent
             color: r1Color
@@ -56,6 +60,7 @@ Item {
     Item {
         id: glossMask
         anchors.fill: parent
+        visible: true
 
         OpacityMask {
             id: maskR3R2
@@ -63,6 +68,7 @@ Item {
             source: circR3
             maskSource: circR2
             invert: true
+            visible: showMasks
         }
 
         OpacityMask {
@@ -70,12 +76,14 @@ Item {
             anchors.fill: parent
             source: circR1
             maskSource: circR1
+            visible: showMasks
         }
     }
 
     Item {
         id: pointerMask
         anchors.fill: parent
+        visible: showMasks
 
         OpacityMask {
             id: maskR2R1
@@ -85,6 +93,54 @@ Item {
             invert: true
         }
     }
+
+
+    // visible  ---------------------------------
+
+    // base color
+    Rectangle {
+        id: baseCircle
+        anchors.fill: parent
+        radius: width/2
+        color: "brown"
+    }
+
+    // gloss
+    Item {
+        id: gloss
+        anchors.fill: parent
+
+        onHeightChanged: {
+            console.log("onHeightChanged")
+        }
+
+        onWidthChanged: {
+            console.log("onWidthChanged")
+        }
+
+        RadialGradient {
+            id: glossGradient
+            anchors.fill: parent
+            verticalRadius: height * 0.3
+            verticalOffset: -height * 0.25
+            visible: false
+
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0) }
+                GradientStop { position: 0.99; color: Qt.rgba(1, 1, 1, 0.45) }
+                GradientStop { position: 1.0; color: Qt.rgba(1, 1, 1, 0) }
+            }
+        }
+
+        OpacityMask {
+            anchors.fill: parent
+            source: glossGradient
+            maskSource: glossMask
+        }
+    }
+
+
+    // helper functions ---------------------------
 
     function r1() {
         return width * r1Stop/2
