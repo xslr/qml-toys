@@ -2,6 +2,8 @@ import QtQuick 2.0
 import QtGraphicalEffects 1.0
 
 Item {
+    property color baseColor: Qt.rgba(12/255, 26/255, 39/255, 1)
+
     property real r1Stop: 0.7
     property real r2Stop: 0.9
     property real r3Stop: 1
@@ -13,18 +15,31 @@ Item {
     property bool showMaskCircles: false
     property bool showMasks: false
     property bool showGloss: true
-    property bool showShadow: true
+    property bool showShadow: false
     property bool showGlow: true
+
+    property real gloss1Intensity: 0.3
+    property real gloss3Intensity: 0.3
 
     property real c1ShadowIntensity: 0.3
     property real c1ShadowWidth: 0.5
 
-    property color c2GlowColor: Qt.rgba(1,1,1,c2GlowIntensity)
+    property color c2GlowColor: Qt.rgba(0.8,0.9,1,c2GlowIntensity)
     property real c2GlowIntensity: 0.3
-    property real c2GlowWidth: 0.5
+    property real c2GlowWidth: 0.7
+
+    property color markingMajorColor: Qt.rgba(1, 1, 1, 1)
+    property color markingMinorColor: Qt.rgba(0.7, 0.7, 0.7, 1)
+    property int markingMinorDivs: 5
+    property int markingMajorDivs: 4
+    property real markingMinorWidth: 2
+    property real markingMajorWidth: 3
+    property real markingMinorLength: 5
+    property real markingMajorLength: 10
+    property real markingAngularWidth: 60
 
 
-    // invisible -------------------------------
+    // invisible ------------------------------------------
 
     // circles
     Item {
@@ -109,14 +124,14 @@ Item {
     }
 
 
-    // visible  ---------------------------------
+    // visible  -------------------------------------------
 
-    // base color
+    // base circle
     Rectangle {
-        id: baseColor
+        id: baseCircle
         anchors.fill: parent
         radius: width/2
-        color: "brown"
+        color: baseColor
     }
 
     // gloss
@@ -130,25 +145,19 @@ Item {
             anchors.fill: parent
             visible: false
 
-            onHeightChanged: {
-                console.log("onHeightChanged")
-                _gloss1Gradient.height = height*2
-            }
+            onHeightChanged: { _gloss1Gradient.height = height*2 }
 
-            onWidthChanged: {
-                console.log("onWidthChanged")
-                _gloss1Gradient.width = width*2
-            }
+            onWidthChanged: { _gloss1Gradient.width = width*2 }
 
             RadialGradient {
                 id: _gloss1Gradient
                 anchors.centerIn: parent
                 verticalRadius: height * 0.35
-                verticalOffset: -height * 0.33
+                verticalOffset: -height * 0.315
 
                 gradient: Gradient {
                     GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0) }
-                    GradientStop { position: 0.99; color: Qt.rgba(1, 1, 1, 0.45) }
+                    GradientStop { position: 0.99; color: Qt.rgba(1, 1, 1, gloss1Intensity) }
                     GradientStop { position: 1.0; color: Qt.rgba(1, 1, 1, 0) }
                 }
             }
@@ -171,15 +180,9 @@ Item {
             anchors.fill: parent
             visible: false
 
-            onHeightChanged: {
-                console.log("onHeightChanged")
-                _gloss3Gradient.height = height*2
-            }
+            onHeightChanged: { _gloss3Gradient.height = height*2 }
 
-            onWidthChanged: {
-                console.log("onWidthChanged")
-                _gloss3Gradient.width = width*2
-            }
+            onWidthChanged: { _gloss3Gradient.width = width*2 }
 
             RadialGradient {
                 id: _gloss3Gradient
@@ -189,7 +192,7 @@ Item {
 
                 gradient: Gradient {
                     GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0) }
-                    GradientStop { position: 0.99; color: Qt.rgba(1, 1, 1, 0.45) }
+                    GradientStop { position: 0.99; color: Qt.rgba(1, 1, 1, gloss3Intensity) }
                     GradientStop { position: 1.0; color: Qt.rgba(1, 1, 1, 0) }
                 }
             }
@@ -202,6 +205,7 @@ Item {
         }
     }
 
+    // shadow
     Item {
         id: dropShadowC1
         anchors.fill: parent
@@ -218,6 +222,7 @@ Item {
         }
     }
 
+    // glow
     Item {
         id: c2IG        // IG -> inner glow
         anchors.fill: parent
@@ -234,7 +239,78 @@ Item {
         }
     }
 
-    // helper functions ---------------------------
+    // marking
+    Item {
+        id: markings
+        anchors.fill: parent
+
+        function requestPaint() { canvas.requestPaint() }
+
+        Canvas {
+            id: canvas
+            anchors.fill: parent
+
+            onPaint: {
+                var ctx = getContext('2d');
+
+                // left
+                drawMarkingSet(ctx, 270, markingMajorColor, markingMinorColor)
+
+                // right
+                drawMarkingSet(ctx, 90, markingMajorColor, markingMinorColor)
+            }
+
+            function drawMarkingSet(ctx, centerAngle, majorColor, minorColor)
+            {
+                var cx = width / 2
+                var cy = height / 2
+                var startAngle = centerAngle - markingAngularWidth / 2
+                var numTicks = markingMajorDivs + 1
+                var tickStep = markingAngularWidth / markingMajorDivs
+
+                // major markings
+                ctx.beginPath()
+                ctx.strokeStyle = majorColor
+                drawTicks(ctx, markingMajorWidth, cx, cy, r2() - markingMajorLength, r2(), numTicks, startAngle, tickStep)
+                ctx.stroke()
+
+                // minor markings
+                ctx.beginPath()
+                ctx.strokeStyle = minorColor
+                var majorTickStep = tickStep;
+                for (var i = 0; i < markingMajorDivs; ++i)
+                {
+                    numTicks = markingMinorDivs + 1
+                    tickStep = markingAngularWidth / (markingMajorDivs * markingMinorDivs)
+                    drawTicks(ctx, markingMinorWidth, cx, cy, r2() - markingMinorLength, r2(),
+                              numTicks, startAngle+(i*majorTickStep), tickStep)
+                }
+                ctx.stroke()
+            }
+
+            function drawTicks(ctx, sw, cx, cy, ri, ro, nticks, offset, step)
+            {
+                ctx.lineWidth = sw
+
+                for (var i = 0; i < nticks; ++i)
+                {
+                    var angle = deg2rad(offset) + i * deg2rad(step)
+
+                    var x1 = cx + (ri * Math.sin(angle))
+                    var x2 = cx + (ro * Math.sin(angle))
+                    var y1 = cy + (ri * Math.cos(angle))
+                    var y2 = cy + (ro * Math.cos(angle))
+                    ctx.moveTo(x1, y1)
+                    ctx.lineTo(x2, y2)
+                }
+            }
+
+            function deg2rad(deg) { return Math.PI * deg/180 }
+        }
+    }
+
+
+    // helper functions -----------------------------------
 
     function r1() {
         return width * r1Stop/2

@@ -3,12 +3,13 @@ import QtQuick.Window 2.2
 
 Window {
     visible: true
-    width: 1600
+    width: 640
     height: 640
     title: qsTr("Hello World")
     color: "orange"
 
     Underlay {
+        id: underlay
         anchors.centerIn: parent
         height: 500
         width: 500
@@ -33,6 +34,9 @@ Window {
             anchors.margins: -10
             color: "transparent"
             border.width: 1
+        }
+
+        onTextChanged: {
         }
     }
 }
