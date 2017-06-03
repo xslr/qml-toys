@@ -28,7 +28,7 @@ Item {
     property real c2GlowIntensity: 0.3
     property real c2GlowWidth: 0.7
 
-    property color markingMajorColor: Qt.rgba(1, 1, 1, 1)
+    property color markingMajorColor: Qt.rgba(0.8, 0.8, 0.8, 1)
     property color markingMinorColor: Qt.rgba(0.7, 0.7, 0.7, 1)
     property int markingMinorDivs: 5
     property int markingMajorDivs: 4
@@ -264,27 +264,28 @@ Item {
             {
                 var cx = width / 2
                 var cy = height / 2
-                var startAngle = centerAngle - markingAngularWidth / 2
-                var numTicks = markingMajorDivs + 1
-                var tickStep = markingAngularWidth / markingMajorDivs
-
-                // major markings
-                ctx.beginPath()
-                ctx.strokeStyle = majorColor
-                drawTicks(ctx, markingMajorWidth, cx, cy, r2() - markingMajorLength, r2(), numTicks, startAngle, tickStep)
-                ctx.stroke()
+                var startAngle
+                var numTicks
+                var majorTickStep = markingAngularWidth / markingMajorDivs
+                var minorTickStep = markingAngularWidth / (markingMajorDivs * markingMinorDivs)
 
                 // minor markings
                 ctx.beginPath()
                 ctx.strokeStyle = minorColor
-                var majorTickStep = tickStep;
+                startAngle = centerAngle - markingAngularWidth / 2
                 for (var i = 0; i < markingMajorDivs; ++i)
                 {
                     numTicks = markingMinorDivs + 1
-                    tickStep = markingAngularWidth / (markingMajorDivs * markingMinorDivs)
                     drawTicks(ctx, markingMinorWidth, cx, cy, r2() - markingMinorLength, r2(),
-                              numTicks, startAngle+(i*majorTickStep), tickStep)
+                              numTicks, startAngle+(i*majorTickStep), minorTickStep)
                 }
+                ctx.stroke()
+
+                // major markings
+                ctx.beginPath()
+                ctx.strokeStyle = majorColor
+                numTicks = markingMajorDivs + 1
+                drawTicks(ctx, markingMajorWidth, cx, cy, r2() - markingMajorLength, r2(), numTicks, startAngle, majorTickStep)
                 ctx.stroke()
             }
 
