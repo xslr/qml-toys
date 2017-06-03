@@ -31,9 +31,9 @@ Item {
     property color markingMajorColor: Qt.rgba(0.8, 0.8, 0.8, 1)
     property color markingMinorColor: Qt.rgba(0.7, 0.7, 0.7, 1)
     property int markingMinorDivs: 5
-    property int markingMajorDivs: 4
+    property int markingMajorDivs: 6
     property real markingMinorWidth: 2
-    property real markingMajorWidth: 3
+    property real markingMajorWidth: 2
     property real markingMinorLength: 5
     property real markingMajorLength: 10
     property real markingAngularWidth: 60
