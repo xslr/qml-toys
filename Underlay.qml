@@ -203,7 +203,7 @@ Item {
     }
 
     Item {
-        id: shadowC1
+        id: dropShadowC1
         anchors.fill: parent
         visible: showShadow
 
@@ -211,11 +211,9 @@ Item {
             anchors.fill: parent
 
             gradient: Gradient {
-                GradientStop { position: 0; color: Qt.rgba(0,0,0,0) }
                 GradientStop { position: c1ShadowStop1InsideEdge(); color: Qt.rgba(0,0,0,0) }
                 GradientStop { position: c1ShadowStop1(); color: Qt.rgba(0,0,0,c1ShadowIntensity) }
                 GradientStop { position: c1ShadowStop2(); color: Qt.rgba(0,0,0,0) }
-                GradientStop { position: 1; color: Qt.rgba(0,0,0,0) }
             }
         }
     }
