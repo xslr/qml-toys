@@ -8,11 +8,10 @@ Window {
     title: qsTr("Hello World")
     color: "orange"
 
-    Underlay {
-        id: underlay
-        anchors.centerIn: parent
-        height: 500
-        width: 500
+
+    Dial {
+        id: dial
+        anchors.fill: parent
     }
 
     MouseArea {

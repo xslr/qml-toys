@@ -5,7 +5,7 @@ Item {
     property color baseColor: Qt.rgba(12/255, 26/255, 39/255, 1)
 
     property real r1Stop: 0.7
-    property real r2Stop: 0.9
+    property real r2Stop: 0.92
     property real r3Stop: 1
 
     property color r1Color: 'gray'
@@ -19,7 +19,7 @@ Item {
     property bool showGlow: true
 
     property real gloss1Intensity: 0.3
-    property real gloss3Intensity: 0.3
+    property real gloss3Intensity: 0.5
 
     property real c1ShadowIntensity: 0.3
     property real c1ShadowWidth: 0.5
@@ -34,8 +34,8 @@ Item {
     property int markingMajorDivs: 6
     property real markingMinorWidth: 2
     property real markingMajorWidth: 2
-    property real markingMinorLength: 5
-    property real markingMajorLength: 10
+    property real markingMinorLength: 8
+    property real markingMajorLength: 15
     property real markingAngularWidth: 60
 
 
@@ -153,7 +153,7 @@ Item {
                 id: _gloss1Gradient
                 anchors.centerIn: parent
                 verticalRadius: height * 0.35
-                verticalOffset: -height * 0.315
+                verticalOffset: -height * 0.305
 
                 gradient: Gradient {
                     GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0) }
