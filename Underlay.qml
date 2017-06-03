@@ -11,7 +11,12 @@ Item {
     property color r3Color: 'lightgray'
 
     property bool showMaskCircles: false
-    property bool showMasks: true
+    property bool showMasks: false
+    property bool showGloss: true
+    property bool showShadow: true
+
+    property real r1ShadowIntensity: 0.7
+    property real r1ShadowWidth: 1.0
 
 
     // invisible -------------------------------
@@ -58,9 +63,22 @@ Item {
 
     // masks
     Item {
-        id: glossMask
+        id: gloss1Mask
         anchors.fill: parent
-        visible: true
+        visible: showMasks
+
+        OpacityMask {
+            id: maskR1R1
+            anchors.fill: parent
+            source: circR1
+            maskSource: circR1
+        }
+    }
+
+    Item {
+        id: gloss3Mask
+        anchors.fill: parent
+        visible: showMasks
 
         OpacityMask {
             id: maskR3R2
@@ -68,15 +86,6 @@ Item {
             source: circR3
             maskSource: circR2
             invert: true
-            visible: showMasks
-        }
-
-        OpacityMask {
-            id: maskR1R1
-            anchors.fill: parent
-            source: circR1
-            maskSource: circR1
-            visible: showMasks
         }
     }
 
@@ -99,7 +108,7 @@ Item {
 
     // base color
     Rectangle {
-        id: baseCircle
+        id: baseColor
         anchors.fill: parent
         radius: width/2
         color: "brown"
@@ -107,38 +116,104 @@ Item {
 
     // gloss
     Item {
-        id: gloss
+        id: gloss1
         anchors.fill: parent
+        visible: showGloss
 
-        onHeightChanged: {
-            console.log("onHeightChanged")
-        }
-
-        onWidthChanged: {
-            console.log("onWidthChanged")
-        }
-
-        RadialGradient {
-            id: glossGradient
+        Item {
+            id: gloss1Gradient
             anchors.fill: parent
-            verticalRadius: height * 0.3
-            verticalOffset: -height * 0.25
             visible: false
 
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0) }
-                GradientStop { position: 0.99; color: Qt.rgba(1, 1, 1, 0.45) }
-                GradientStop { position: 1.0; color: Qt.rgba(1, 1, 1, 0) }
+            onHeightChanged: {
+                console.log("onHeightChanged")
+                _gloss1Gradient.height = height*2
+            }
+
+            onWidthChanged: {
+                console.log("onWidthChanged")
+                _gloss1Gradient.width = width*2
+            }
+
+            RadialGradient {
+                id: _gloss1Gradient
+                anchors.centerIn: parent
+                verticalRadius: height * 0.35
+                verticalOffset: -height * 0.33
+
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0) }
+                    GradientStop { position: 0.99; color: Qt.rgba(1, 1, 1, 0.45) }
+                    GradientStop { position: 1.0; color: Qt.rgba(1, 1, 1, 0) }
+                }
             }
         }
 
         OpacityMask {
             anchors.fill: parent
-            source: glossGradient
-            maskSource: glossMask
+            source: gloss1Gradient
+            maskSource: gloss1Mask
         }
     }
 
+    Item {
+        id: gloss3
+        anchors.fill: parent
+        visible: showGloss
+
+        Item {
+            id: gloss3Gradient
+            anchors.fill: parent
+            visible: false
+
+            onHeightChanged: {
+                console.log("onHeightChanged")
+                _gloss3Gradient.height = height*2
+            }
+
+            onWidthChanged: {
+                console.log("onWidthChanged")
+                _gloss3Gradient.width = width*2
+            }
+
+            RadialGradient {
+                id: _gloss3Gradient
+                anchors.centerIn: parent
+                verticalRadius: height * 0.35
+                verticalOffset: -height * 0.33
+
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: Qt.rgba(1, 1, 1, 0) }
+                    GradientStop { position: 0.99; color: Qt.rgba(1, 1, 1, 0.45) }
+                    GradientStop { position: 1.0; color: Qt.rgba(1, 1, 1, 0) }
+                }
+            }
+        }
+
+        OpacityMask {
+            anchors.fill: parent
+            source: gloss3Gradient
+            maskSource: gloss3Mask
+        }
+    }
+
+    Item {
+        id: shadowC1
+        anchors.fill: parent
+        visible: showShadow
+
+        RadialGradient {
+            anchors.fill: parent
+
+            gradient: Gradient {
+                GradientStop { position: 0; color: Qt.rgba(0,0,0,0) }
+                GradientStop { position: stop1InsideEdge(); color: Qt.rgba(0,0,0,0) }
+                GradientStop { position: stop1(); color: Qt.rgba(0,0,0,r1ShadowIntensity) }
+                GradientStop { position: stop2(); color: Qt.rgba(0,0,0,0) }
+                GradientStop { position: 1; color: Qt.rgba(0,0,0,0) }
+            }
+        }
+    }
 
     // helper functions ---------------------------
 
@@ -153,6 +228,11 @@ Item {
     function r3() {
         return width * r3Stop/2
     }
+
+    // for shadow
+    function stop1() { return 0.5*r1Stop*0.999999 }
+    function stop2() { return 0.5*(r1Stop + (r2Stop-r1Stop)*r1ShadowWidth) }
+    function stop1InsideEdge() { return stop1() * 0.999999 }
 }
 
 
