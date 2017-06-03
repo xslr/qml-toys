@@ -3,15 +3,15 @@ import QtQuick.Window 2.2
 
 Window {
     visible: true
-    width: 640
+    width: 1600
     height: 640
     title: qsTr("Hello World")
     color: "orange"
 
     Underlay {
         anchors.centerIn: parent
-        height: 400
-        width: 400
+        height: 500
+        width: 500
     }
 
     MouseArea {

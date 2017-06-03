@@ -14,9 +14,14 @@ Item {
     property bool showMasks: false
     property bool showGloss: true
     property bool showShadow: true
+    property bool showGlow: true
 
-    property real r1ShadowIntensity: 0.7
-    property real r1ShadowWidth: 1.0
+    property real c1ShadowIntensity: 0.3
+    property real c1ShadowWidth: 0.5
+
+    property color c2GlowColor: Qt.rgba(1,1,1,c2GlowIntensity)
+    property real c2GlowIntensity: 0.3
+    property real c2GlowWidth: 0.5
 
 
     // invisible -------------------------------
@@ -207,10 +212,26 @@ Item {
 
             gradient: Gradient {
                 GradientStop { position: 0; color: Qt.rgba(0,0,0,0) }
-                GradientStop { position: stop1InsideEdge(); color: Qt.rgba(0,0,0,0) }
-                GradientStop { position: stop1(); color: Qt.rgba(0,0,0,r1ShadowIntensity) }
-                GradientStop { position: stop2(); color: Qt.rgba(0,0,0,0) }
+                GradientStop { position: c1ShadowStop1InsideEdge(); color: Qt.rgba(0,0,0,0) }
+                GradientStop { position: c1ShadowStop1(); color: Qt.rgba(0,0,0,c1ShadowIntensity) }
+                GradientStop { position: c1ShadowStop2(); color: Qt.rgba(0,0,0,0) }
                 GradientStop { position: 1; color: Qt.rgba(0,0,0,0) }
+            }
+        }
+    }
+
+    Item {
+        id: c2IG        // IG -> inner glow
+        anchors.fill: parent
+        visible: showGlow
+
+        RadialGradient {
+            anchors.fill: parent
+
+            gradient: Gradient {
+                GradientStop { position: c2IGStop1(); color: Qt.rgba(c2GlowColor.r, c2GlowColor.g, c2GlowColor.b, 0) }
+                GradientStop { position: c2IGStop2(); color: c2GlowColor }
+                GradientStop { position: c2IGStop2OutEdge(); color: Qt.rgba(c2GlowColor.r, c2GlowColor.g, c2GlowColor.b, 0) }
             }
         }
     }
@@ -229,10 +250,15 @@ Item {
         return width * r3Stop/2
     }
 
-    // for shadow
-    function stop1() { return 0.5*r1Stop*0.999999 }
-    function stop2() { return 0.5*(r1Stop + (r2Stop-r1Stop)*r1ShadowWidth) }
-    function stop1InsideEdge() { return stop1() * 0.999999 }
+    // for c1 drop shadow
+    function c1ShadowStop1() { return 0.5*r1Stop }  // x 0.5 because circumference of circle is at stop position 0.5
+    function c1ShadowStop2() { return 0.5*(r1Stop + (r2Stop-r1Stop)*c1ShadowWidth) }
+    function c1ShadowStop1InsideEdge() { return c1ShadowStop1() * 0.999999 }
+
+    // for c2 inner glow
+    function c2IGStop1() { return 0.5*(r2Stop - (r2Stop-r1Stop)*c2GlowWidth) }
+    function c2IGStop2() { return 0.5*r2Stop }
+    function c2IGStop2OutEdge() { return c2IGStop2() * 1.000001 }
 }
 
 
