@@ -2,6 +2,8 @@ import QtQuick 2.0
 import QtGraphicalEffects 1.0
 
 Item {
+    readonly property Item c1Mask: gloss1Mask
+
     property color baseColor: Qt.rgba(12/255, 26/255, 39/255, 1)
 
     property real r1Stop: 0.7

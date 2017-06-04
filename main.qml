@@ -17,6 +17,7 @@ Window {
         pointerHalfWidthAngle: 3
         markingAngularWidth: 60
         pointerAnimationDuration: 500
+        baseColor: Qt.rgba(12/255, 26/255, 39/255, 1)
     }
 
     MouseArea {

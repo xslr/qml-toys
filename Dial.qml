@@ -2,6 +2,9 @@ import QtQuick 2.0
 import QtGraphicalEffects 1.0
 
 Item {
+    readonly property Item contentMask: underlay.c1Mask
+
+    property color baseColor: Qt.rgba(0.5, 0.5, 0.5, 1)
     property real valueLeft: 0.5
     property real valueRight: 0.5
     property color rightPointerColor: Qt.rgba(1,0,0,1)
@@ -34,6 +37,7 @@ Item {
         id: underlay
         anchors.fill: parent
         markingAngularWidth: parent.markingAngularWidth
+        baseColor: parent.baseColor
     }
 
     Canvas {
