@@ -14,6 +14,7 @@ Window {
         anchors.fill: parent
         valueLeft: 0.5
         valueRight: 0.5
+        markingAngularWidth: 60
     }
 
     MouseArea {

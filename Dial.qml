@@ -4,11 +4,12 @@ import QtGraphicalEffects 1.0
 Item {
     property real valueLeft: 0.5
     property real valueRight: 0.5
-    property color attentionPointerColor: Qt.rgba(1,0,0,1)
-    property color relaxationPointerColor: Qt.rgba(0,1,0,1)
+    property color rightPointerColor: Qt.rgba(1,0,0,1)
+    property color leftPointerColor: Qt.rgba(0,1,0,1)
     property real attention: 0
     property real relaxation: 0
     property real pointerHalfWidthAngle: 3
+    property real markingAngularWidth: 60
 
     onHeightChanged: {
         if (width > height)
@@ -36,6 +37,7 @@ Item {
     Underlay {
         id: underlay
         anchors.fill: parent
+        markingAngularWidth: parent.markingAngularWidth
     }
 
     Canvas {
@@ -49,11 +51,12 @@ Item {
             var ro = underlay.r2() * 0.9
 
             ctx.clearRect(0,0,width,height)
-            // attention pointer
-            drawPointer(ctx, 60, 60, 1, ri, ro, attentionPointerColor, valueRight)
 
-            // relaxation pointer
-            drawPointer(ctx, 300, 60, -1, ri, ro, relaxationPointerColor, valueLeft)
+            // right pointer
+            drawPointer(ctx, 90-(markingAngularWidth/2), markingAngularWidth, 1, ri, ro, rightPointerColor, valueRight)
+
+            // left pointer
+            drawPointer(ctx, 270+(markingAngularWidth/2), markingAngularWidth, -1, ri, ro, leftPointerColor, valueLeft)
         }
 
         function drawPointer(ctx, startAngle, angularWidth, incDir, ri, ro, pointerColor, value) {
