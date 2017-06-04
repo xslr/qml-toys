@@ -2,6 +2,8 @@ import QtQuick 2.0
 import QtGraphicalEffects 1.0
 
 Item {
+    property real valueLeft: 0.5
+    property real valueRight: 0.5
     property color attentionPointerColor: Qt.rgba(1,0,0,1)
     property color relaxationPointerColor: Qt.rgba(0,1,0,1)
     property real attention: 0
@@ -22,6 +24,15 @@ Item {
             height = width
     }
 
+    onValueLeftChanged: {
+        if (NaN == valueLeft) valueLeft = 0
+        pointer.requestPaint()
+    }
+    onValueRightChanged: {
+        if (NaN == valueRight) valueRight = 0
+        pointer.requestPaint()
+    }
+
     Underlay {
         id: underlay
         anchors.fill: parent
@@ -34,16 +45,19 @@ Item {
         onPaint: {
             var ctx = getContext('2d')
 
+            var ri = underlay.r1() * 1.05
+            var ro = underlay.r2() * 0.9
+
+            ctx.clearRect(0,0,width,height)
             // attention pointer
-            ctx.fillStyle = attentionPointerColor
-            drawPointer(ctx, 0, 100, 200)
+            drawPointer(ctx, 60, 60, 1, ri, ro, attentionPointerColor, valueRight)
 
             // relaxation pointer
-            ctx.fillStyle = relaxationPointerColor
-            drawPointer(ctx, 180, 100, 200)
+            drawPointer(ctx, 300, 60, -1, ri, ro, relaxationPointerColor, valueLeft)
         }
 
-        function drawPointer(ctx, angle, ri, ro) {
+        function drawPointer(ctx, startAngle, angularWidth, incDir, ri, ro, pointerColor, value) {
+            var angle = startAngle + (incDir * value * angularWidth)
             var cx = width / 2
             var cy = width / 2
             var a1 = deg2rad(angle)
@@ -57,6 +71,7 @@ Item {
             var y2 = cy + ri * Math.cos(a2)
             var y3 = cy + ri * Math.cos(a3)
 
+            ctx.fillStyle = pointerColor
             ctx.beginPath()
 
             ctx.moveTo(x1, y1)

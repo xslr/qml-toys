@@ -12,6 +12,8 @@ Window {
     Dial {
         id: dial
         anchors.fill: parent
+        valueLeft: 0.5
+        valueRight: 0.5
     }
 
     MouseArea {
@@ -36,6 +38,8 @@ Window {
         }
 
         onTextChanged: {
+            dial.valueLeft = parseFloat(text)
+            dial.valueRight = parseFloat(text)
         }
     }
 }
