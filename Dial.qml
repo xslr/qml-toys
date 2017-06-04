@@ -6,10 +6,9 @@ Item {
     property real valueRight: 0.5
     property color rightPointerColor: Qt.rgba(1,0,0,1)
     property color leftPointerColor: Qt.rgba(0,1,0,1)
-    property real attention: 0
-    property real relaxation: 0
     property real pointerHalfWidthAngle: 3
     property real markingAngularWidth: 60
+    property real pointerAnimationDuration: 1000
 
     onHeightChanged: {
         if (width > height)
@@ -25,14 +24,11 @@ Item {
             height = width
     }
 
-    onValueLeftChanged: {
-        if (NaN == valueLeft) valueLeft = 0
-        pointer.requestPaint()
-    }
-    onValueRightChanged: {
-        if (NaN == valueRight) valueRight = 0
-        pointer.requestPaint()
-    }
+    onValueLeftChanged: { pointer.requestPaint() }
+    onValueRightChanged: { pointer.requestPaint() }
+
+    Behavior on valueLeft { SmoothedAnimation { duration: pointerAnimationDuration; velocity: -1 } }
+    Behavior on valueRight { SmoothedAnimation { duration: pointerAnimationDuration; velocity: -1 } }
 
     Underlay {
         id: underlay

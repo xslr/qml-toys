@@ -14,7 +14,9 @@ Window {
         anchors.fill: parent
         valueLeft: 0.5
         valueRight: 0.5
+        pointerHalfWidthAngle: 3
         markingAngularWidth: 60
+        pointerAnimationDuration: 500
     }
 
     MouseArea {
@@ -39,8 +41,11 @@ Window {
         }
 
         onTextChanged: {
-            dial.valueLeft = parseFloat(text)
-            dial.valueRight = parseFloat(text)
+            if (!isNaN(parseFloat(text)))
+            {
+                dial.valueLeft = parseFloat(text)
+                dial.valueRight = parseFloat(text)
+            }
         }
     }
 }
