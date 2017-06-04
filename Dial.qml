@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtGraphicalEffects 1.0
 
 Item {
+    property Item content: defaultContent
     readonly property Item contentMask: underlay.c1Mask
 
     property color baseColor: Qt.rgba(0.5, 0.5, 0.5, 1)
@@ -38,6 +39,26 @@ Item {
         anchors.fill: parent
         markingAngularWidth: parent.markingAngularWidth
         baseColor: parent.baseColor
+    }
+
+    Text {
+        anchors.fill: parent
+        id: defaultContent
+        text: 'no content'
+        color: 'lightgray'
+        visible: false
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        font {
+            italic: true
+            pointSize: 60
+        }
+    }
+
+    OpacityMask {
+        anchors.fill: parent
+        source: content
+        maskSource: contentMask
     }
 
     Canvas {
