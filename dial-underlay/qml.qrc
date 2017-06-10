@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Underlay.qml</file>
+        <file>Dial.qml</file>
+        <file>CurvedPanel.qml</file>
+    </qresource>
+</RCC>
